@@ -1,0 +1,7 @@
+country,cv_mean,cv_std,rmse_test,r2_test,figure_rvp,figure_imp
+COL,-1.9127334699078937,0.9169758501384873,5.16578545461486,0.29643819520861503,./reports/figures/real_vs_predicho_COL_random_forest.png,./reports/figures/importances_COL.png
+MEX,-2.160705286101964,0.9497157745943637,2.6441931809926547,0.7215389894873899,./reports/figures/real_vs_predicho_MEX_random_forest.png,./reports/figures/importances_MEX.png
+BRA,-2.685433183796163,0.7488859784738446,1.8233106573211342,0.5817238701085913,./reports/figures/real_vs_predicho_BRA_random_forest.png,./reports/figures/importances_BRA.png
+CHL,-1.868184943839044,0.4900793323840263,4.736161999917885,0.2794840597608941,./reports/figures/real_vs_predicho_CHL_random_forest.png,./reports/figures/importances_CHL.png
+PER,-2.460000875432531,0.9869250058817867,6.476420083094994,0.3097166429689918,./reports/figures/real_vs_predicho_PER_random_forest.png,./reports/figures/importances_PER.png
+ARG,-4.827132953785965,2.16146094602346,3.5153149559533845,0.7416298331425442,./reports/figures/real_vs_predicho_ARG_random_forest.png,./reports/figures/importances_ARG.png

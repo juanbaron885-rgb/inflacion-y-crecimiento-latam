@@ -71,20 +71,20 @@ PIB vs Inflación (Todos los países): animación comparativa 1991–2024
 También contiene un selector por país que muestra las 4 gráficas clave.
 
 Estructura del Proyecto
-├── data/
-│   ├── raw/               # datos crudos descargados
-│   ├── processed/         # datos limpios y features (CSV)
-├── reports/
-│   ├── figures/           # figuras generadas para README
-├── docs/
-│   ├── index.html         # dashboard principal (GitHub Pages)
-│   ├── mapa.html          # mapa interactivo LATAM
-│   ├── pib_vs_inflacion.html
-│   ├── insights/          # páginas por país (4 gráficas)
-│   ├── figures/           # imágenes públicas para Pages
-│   ├── .nojekyll
-├── main.py                # script principal con CLI (fetch, bench, report, report_html)
-├── README.md              # este documento
+-data/
+-raw/               # datos crudos descargados
+-processed/         # datos limpios y features (CSV)
+-reports/
+-figures/           # figuras generadas para README
+- docs/
+-index.html         # dashboard principal (GitHub Pages)
+-mapa.html          # mapa interactivo LATAM
+- pib_vs_inflacion.html
+-insights/          # páginas por país (4 gráficas)
+-figures/           # imágenes públicas para Pages
+-.nojekyll
+-main.py                # script principal con CLI (fetch, bench, report, report_html)
+- README.md              # este documento
 
 Comandos Principales
 # 1. Descargar y procesar datos del Banco Mundial
@@ -101,12 +101,12 @@ python main.py report_html
 
 Resultados Resumidos
 País	RMSE (Hold-Out)	R² (Hold-Out)
-ARG	...	...
-BRA	...	...
-CHL	...	...
-COL	...	...
-MEX	...	...
-PER	...	...
+ARG
+BRA	
+CHL	
+COL	
+MEX	
+PER	
 
 (Los valores reales se generan automáticamente en benchmark_metrics.csv.)
 

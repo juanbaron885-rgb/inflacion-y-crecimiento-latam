@@ -17,12 +17,34 @@
 <body>
 <header><div class="wrap"><strong>LATAM — Dashboard Interactivo</strong></div></header>
 <main class="wrap">
-  <p class="note">Selecciona una vista. Cada una tiene sus propios controles nativos de Plotly (sin JavaScript externo).</p>
+  <p class="note">Selecciona una vista. </p>
   <div class="buttons">
     <a class="btn" href="mapa.html">Mapa (mapamundi interactivo)</a>
     <a class="btn secondary" href="pib_vs_inflacion.html">PIB vs Inflación (TODOS)</a>
   </div>
   <p class="note">Años disponibles: 1991–2024. Año inicial con mejor cobertura: <strong>1991</strong>.</p>
 </main>
+
+<section class="wrap" style="margin-top:18px;">
+  <h2>Selector de país (4 gráficas)</h2>
+  <div class="grid">
+    <a class="btn" href="insights/ARG.html">ARG</a>
+<a class="btn" href="insights/BRA.html">BRA</a>
+<a class="btn" href="insights/CHL.html">CHL</a>
+<a class="btn" href="insights/COL.html">COL</a>
+<a class="btn" href="insights/MEX.html">MEX</a>
+<a class="btn" href="insights/PER.html">PER</a>
+  </div>
+</section>
+<style>
+  .grid { display:flex; flex-wrap:wrap; gap:10px; }
+  .btn {
+    text-decoration:none; background:#0f172a; color:#fff;
+    padding:10px 14px; border-radius:999px; font-weight:700;
+    border:1px solid #0f172a; display:inline-block;
+  }
+  .btn:hover { opacity:.9; }
+</style>
+
 </body>
 </html>

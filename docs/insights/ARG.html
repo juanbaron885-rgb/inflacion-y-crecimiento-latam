@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8"/>
+<title>ARG — Análisis por país</title>
+<style>
+  body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial; background:#f9fafb; color:#0f172a; margin:0; }
+  header { background:#0f172a; color:#fff; padding:16px 12px; }
+  .wrap { max-width:1100px; margin:0 auto; padding:0 12px; }
+  h2 { margin:18px 0 8px; }
+  .card { background:#fff; border:1px solid #e5e7eb; border-radius:14px; padding:12px; margin:14px 0; box-shadow:0 4px 10px rgba(0,0,0,.05); }
+  img { max-width:100%; height:auto; display:block; margin:6px auto; }
+  a.btn { text-decoration:none; display:inline-block; margin:10px 0; background:#0f172a; color:#fff; padding:8px 12px; border-radius:999px; }
+</style>
+</head>
+<body>
+<header><div class="wrap"><strong>ARG — Análisis por país</strong></div></header>
+<main class="wrap">
+  <a class="btn" href="../index.html">← Volver al índice</a>
+
+  <div class="card">
+    <h2>Series de tiempo: Inflación y PIB</h2>
+    <img src="../figures/series_ARG.png" alt="Series ARG">
+  </div>
+
+  <div class="card">
+    <h2>Relación Inflación ↔ PIB</h2>
+    <img src="../figures/scatter_ARG.png" alt="Scatter ARG">
+  </div>
+
+  <div class="card">
+    <h2>Hold-out: Real vs Predicho</h2>
+    <img src="../figures/real_vs_predicho_ARG_random_forest.png" alt="Real vs Predicho ARG">
+  </div>
+
+  <div class="card">
+    <h2>RMSE (hold-out)</h2>
+    <img src="../figures/rmse_ARG.png" alt="RMSE ARG">
+  </div>
+</main>
+</body>
+</html>

@@ -440,3 +440,188 @@ if __name__ == "__main__":
 # !python main.py bench  → entrena y evalúa el modelo Random Forest.
 # !python main.py report → genera gráficas y crea el README con resultados.
 # ================================================================
+# ============================================================================
+# NUEVO COMANDO: report_html → genera dashboard interactivo (Plotly + HTML)
+# ============================================================================
+
+import plotly.express as px
+from plotly.subplots import make_subplots
+import plotly.graph_objects as go
+
+def cmd_report_html(args):
+    """Genera un reporte interactivo HTML con Plotly (para GitHub Pages)."""
+    ensure_dirs()
+    import pandas as pd, os
+
+    clean_path = os.path.join(PROC_DIR, "latam_macro_clean.csv")
+    bench_path = os.path.join(PROC_DIR, "benchmark_metrics.csv")
+
+    df = pd.read_csv(clean_path)
+    bench = pd.read_csv(bench_path)
+
+    # Gráfico interactivo principal: Inflación ↔ PIB animado por año
+    df = df.dropna(subset=["inflation", "gdp_growth"])
+    df["inflation_pct"] = df["inflation"].astype(float).round(2)
+    df["gdp_growth_pct"] = df["gdp_growth"].astype(float).round(2)
+
+    fig = px.scatter(
+        df,
+        x="inflation_pct",
+        y="gdp_growth_pct",
+        animation_frame="year",
+        animation_group="country",
+        color="country",
+        hover_name="country",
+        size_max=30,
+        title="Inflación vs Crecimiento del PIB (LATAM, animado por año)",
+        labels={
+            "inflation_pct": "Inflación (%)",
+            "gdp_growth_pct": "Crecimiento PIB (%)"
+        },
+    )
+
+    fig.update_traces(marker=dict(sizemode="area", sizeref=0.5))
+    fig.update_layout(width=900, height=600, template="plotly_white")
+
+    os.makedirs("docs", exist_ok=True)
+    fig.write_html("docs/index.html", include_plotlyjs="cdn")
+    print("[OK] Interactivo listo en docs/index.html (GitHub Pages).")
+
+# Añadir el nuevo subcomando al parser
+def build_parser_with_html():
+    parser = build_parser()
+    r_html = parser.add_subparser = parser.add_subparsers(dest="cmd_html", required=False)
+    parser.add_argument("--html", action="store_true", help="Generar dashboard HTML interactivo")
+    return parser
+
+# Sobrescribir main para incluirlo
+if __name__ == "__main__":
+    import sys
+    ensure_dirs()
+    if len(sys.argv) > 1 and sys.argv[1] == "report_html":
+        cmd_report_html(None)
+    else:
+        parser = build_parser()
+        args = parser.parse_args()
+        args.func(args)
+# ============================================================================
+# SUBCOMANDO NUEVO: report_html → dashboard interactivo (Plotly) en docs/
+# ============================================================================
+
+def cmd_report_html(args):
+    """Genera docs/index.html con un scatter animado (Inflación vs PIB por año)."""
+    import os, pandas as pd
+    import plotly.express as px
+    from pathlib import Path
+
+    ensure_dirs()
+    clean_path = os.path.join(PROC_DIR, "latam_macro_clean.csv")
+    if not os.path.exists(clean_path):
+        raise FileNotFoundError("Falta data procesada. Corre antes: 'fetch' y 'bench'.")
+
+    df = pd.read_csv(clean_path).dropna(subset=["inflation","gdp_growth"]).copy()
+    # columnas en % (texto) para ejes/hover
+    df["inflation_pct"]  = df["inflation"].astype(float).round(2)
+    df["gdp_growth_pct"] = df["gdp_growth"].astype(float).round(2)
+
+    fig = px.scatter(
+        df, x="inflation_pct", y="gdp_growth_pct",
+        animation_frame="year", animation_group="country",
+        color="country", hover_name="country", size_max=28,
+        labels={"inflation_pct":"Inflación (%)", "gdp_growth_pct":"Crecimiento PIB (%)"},
+        title="LATAM: Inflación vs Crecimiento del PIB (animado por año)"
+    )
+    fig.update_xaxes(ticksuffix="%"); fig.update_yaxes(ticksuffix="%")
+
+    Path("docs").mkdir(parents=True, exist_ok=True)
+    Path("docs/.nojekyll").write_text("", encoding="utf-8")  # evita que Jekyll bloquee recursos
+    fig.write_html("docs/index.html", include_plotlyjs="cdn")
+    print("[OK] Interactivo listo en docs/index.html (GitHub Pages).")
+
+# --- Re-defino el parser para incluir 'report_html' además de fetch/bench/report ---
+def build_parser():
+    import argparse
+    p = argparse.ArgumentParser(description="LATAM Inflación ↔ PIB (WB API) + Random Forest + Reportes")
+    sub = p.add_subparsers(dest="cmd", required=True)
+
+    f = sub.add_parser("fetch", help="Descargar/limpiar y construir features")
+    f.add_argument("--countries", nargs="+", default=COUNTRIES)
+    f.add_argument("--start_year", type=int, default=1991)
+    f.add_argument("--end_year", type=int, default=None)
+    f.set_defaults(func=cmd_fetch)
+
+    b = sub.add_parser("bench", help="Entrenar/Evaluar SOLO Random Forest por país")
+    b.add_argument("--countries", nargs="+", default=COUNTRIES)
+    b.set_defaults(func=cmd_bench)
+
+    r = sub.add_parser("report", help="Generar gráficas y README visual (estático)")
+    r.set_defaults(func=cmd_report)
+
+    rh = sub.add_parser("report_html", help="Generar dashboard interactivo (Plotly) en docs/")
+    rh.set_defaults(func=cmd_report_html)
+
+    return p
+# ============================================================================
+# NUEVO SUBCOMANDO: report_html → genera dashboard interactivo (Plotly)
+# ============================================================================
+
+import plotly.express as px
+import pandas as pd, os
+from pathlib import Path
+
+def cmd_report_html(args):
+    """Genera un dashboard interactivo (HTML) con Plotly animado por año."""
+    ensure_dirs()
+    clean_path = os.path.join(PROC_DIR, "latam_macro_clean.csv")
+    if not os.path.exists(clean_path):
+        raise FileNotFoundError("Faltan datos procesados. Corre antes: fetch y bench.")
+    
+    # Cargar datos y limpiar
+    df = pd.read_csv(clean_path).dropna(subset=["inflation", "gdp_growth"]).copy()
+    df["inflation_pct"]  = df["inflation"].round(2)
+    df["gdp_growth_pct"] = df["gdp_growth"].round(2)
+
+    # Crear gráfico interactivo animado
+    fig = px.scatter(
+        df,
+        x="inflation_pct", y="gdp_growth_pct",
+        animation_frame="year", animation_group="country",
+        color="country", hover_name="country",
+        labels={
+            "inflation_pct": "Inflación (%)",
+            "gdp_growth_pct": "Crecimiento PIB (%)"
+        },
+        title="Inflación vs Crecimiento PIB — LATAM (Animado por Año)"
+    )
+    fig.update_xaxes(ticksuffix="%")
+    fig.update_yaxes(ticksuffix="%")
+    fig.update_layout(width=900, height=600, template="plotly_white")
+
+    # Guardar en docs/
+    Path("docs").mkdir(parents=True, exist_ok=True)
+    Path("docs/.nojekyll").write_text("")  # evita que GitHub Pages bloquee recursos
+    fig.write_html("docs/index.html", include_plotlyjs="cdn")
+    print("[OK] Interactivo listo en docs/index.html (GitHub Pages).")
+
+# Reescribimos el parser para incluir el nuevo comando
+def build_parser():
+    p = argparse.ArgumentParser(description="LATAM Inflación ↔ PIB + Random Forest + Reportes")
+    sub = p.add_subparsers(dest="cmd", required=True)
+
+    f = sub.add_parser("fetch", help="Descargar/limpiar y construir features")
+    f.add_argument("--countries", nargs="+", default=COUNTRIES)
+    f.add_argument("--start_year", type=int, default=1991)
+    f.add_argument("--end_year", type=int, default=None)
+    f.set_defaults(func=cmd_fetch)
+
+    b = sub.add_parser("bench", help="Entrenar/Evaluar SOLO Random Forest por país")
+    b.add_argument("--countries", nargs="+", default=COUNTRIES)
+    b.set_defaults(func=cmd_bench)
+
+    r = sub.add_parser("report", help="Generar gráficas y README visual (estático)")
+    r.set_defaults(func=cmd_report)
+
+    rh = sub.add_parser("report_html", help="Generar dashboard interactivo (Plotly)")
+    rh.set_defaults(func=cmd_report_html)
+
+    return p

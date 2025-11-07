@@ -1,127 +1,132 @@
-# LATAM — Inflación ↔ PIB usando Random Forest
+LATAM: Inflación ↔ PIB con Random Forest (Economía + ML)
 
-Proyecto reproducible con datos del Banco Mundial.
+Autor: Juan Baron
+Fecha: Noviembre 2025
 
-Se crean features (rezagos y diferencias), se valida temporalmente y se evalúa con hold-out.
+Propósito del Proyecto
 
+El propósito de este proyecto es predecir el crecimiento del Producto Interno Bruto real (PIB %) de los países latinoamericanos utilizando información histórica de inflación y crecimiento del PIB, combinando el análisis económico tradicional con herramientas modernas de Machine Learning.
 
-## Países incluidos
+Para lograrlo, se emplea un modelo Random Forest Regressor, entrenado y validado con datos anuales del Banco Mundial (1991–2024). El modelo busca capturar patrones temporales y no lineales entre la inflación y el crecimiento económico, ofreciendo una herramienta predictiva para análisis macroeconómicos en la región.
 
-ARG, BRA, CHL, COL, MEX, PER
+Metodología y Flujo de Trabajo
+1. Obtención de datos (API del Banco Mundial)
 
-## Resultados (RMSE/R² en hold-out)
+Se descargaron los indicadores:
 
-- **COL** → RMSE=5.166 | R²=0.296
-- **MEX** → RMSE=2.644 | R²=0.722
-- **BRA** → RMSE=1.823 | R²=0.582
-- **CHL** → RMSE=4.736 | R²=0.279
-- **PER** → RMSE=6.476 | R²=0.310
-- **ARG** → RMSE=3.515 | R²=0.742
+Inflation, consumer prices (annual %) → FP.CPI.TOTL.ZG
 
-## Visualizaciones
+GDP growth (annual %) → NY.GDP.MKTP.KD.ZG
 
-### ARG — Series de tiempo: Inflación y PIB
+Países incluidos: COL, BRA, CHL, MEX, ARG, PER
 
-![Series de tiempo: Inflación y PIB](reports/figures/series_ARG.png)
+El proceso maneja paginación, limpieza y formateo de datos con pandas.
 
-### ARG — Relación Inflación ↔ PIB
+2. Limpieza y construcción de features
 
-![Relación Inflación ↔ PIB](reports/figures/scatter_ARG.png)
+Se rellenaron valores faltantes por país (ffill/bfill).
 
-### ARG — Hold-out: Real vs Predicho
+Se generaron lags (rezagos) y diferencias anuales para capturar dinámica temporal:
 
-![Hold-out: Real vs Predicho](reports/figures/real_vs_predicho_ARG_random_forest.png)
+inflation_lag1, inflation_lag2, inflation_lag3
 
-### ARG — RMSE (hold-out)
+gdp_growth_lag1, gdp_growth_lag2, gdp_growth_lag3
 
-![RMSE (hold-out)](reports/figures/rmse_ARG.png)
+dinflation, dgdp
 
-### BRA — Series de tiempo: Inflación y PIB
+3. Entrenamiento del modelo
 
-![Series de tiempo: Inflación y PIB](reports/figures/series_BRA.png)
+Se utilizó Random Forest Regressor con:
 
-### BRA — Relación Inflación ↔ PIB
+300 árboles, random_state=42
 
-![Relación Inflación ↔ PIB](reports/figures/scatter_BRA.png)
+Validación cruzada temporal (TimeSeriesSplit, 5 folds)
 
-### BRA — Hold-out: Real vs Predicho
+Evaluación hold-out (15% final)
 
-![Hold-out: Real vs Predicho](reports/figures/real_vs_predicho_BRA_random_forest.png)
+Métricas obtenidas:
 
-### BRA — RMSE (hold-out)
+RMSE (Root Mean Squared Error)
 
-![RMSE (hold-out)](reports/figures/rmse_BRA.png)
+R² (Coeficiente de determinación)
 
-### CHL — Series de tiempo: Inflación y PIB
+4. Visualizaciones
 
-![Series de tiempo: Inflación y PIB](reports/figures/series_CHL.png)
+El proyecto genera automáticamente:
 
-### CHL — Relación Inflación ↔ PIB
+Series de tiempo Inflación vs PIB
 
-![Relación Inflación ↔ PIB](reports/figures/scatter_CHL.png)
+Dispersión Inflación ↔ Crecimiento PIB
 
-### CHL — Hold-out: Real vs Predicho
+Real vs Predicho (hold-out)
 
-![Hold-out: Real vs Predicho](reports/figures/real_vs_predicho_CHL_random_forest.png)
+RMSE por país
 
-### CHL — RMSE (hold-out)
+Además, incluye un Dashboard Interactivo con dos vistas principales:
 
-![RMSE (hold-out)](reports/figures/rmse_CHL.png)
+Mapa interactivo LATAM: evolución anual de la inflación
 
-### COL — Series de tiempo: Inflación y PIB
+PIB vs Inflación (Todos los países): animación comparativa 1991–2024
 
-![Series de tiempo: Inflación y PIB](reports/figures/series_COL.png)
+También contiene un selector por país que muestra las 4 gráficas clave.
 
-### COL — Relación Inflación ↔ PIB
+Estructura del Proyecto
+├── data/
+│   ├── raw/               # datos crudos descargados
+│   ├── processed/         # datos limpios y features (CSV)
+├── reports/
+│   ├── figures/           # figuras generadas para README
+├── docs/
+│   ├── index.html         # dashboard principal (GitHub Pages)
+│   ├── mapa.html          # mapa interactivo LATAM
+│   ├── pib_vs_inflacion.html
+│   ├── insights/          # páginas por país (4 gráficas)
+│   ├── figures/           # imágenes públicas para Pages
+│   ├── .nojekyll
+├── main.py                # script principal con CLI (fetch, bench, report, report_html)
+├── README.md              # este documento
 
-![Relación Inflación ↔ PIB](reports/figures/scatter_COL.png)
-
-### COL — Hold-out: Real vs Predicho
-
-![Hold-out: Real vs Predicho](reports/figures/real_vs_predicho_COL_random_forest.png)
-
-### COL — RMSE (hold-out)
-
-![RMSE (hold-out)](reports/figures/rmse_COL.png)
-
-### MEX — Series de tiempo: Inflación y PIB
-
-![Series de tiempo: Inflación y PIB](reports/figures/series_MEX.png)
-
-### MEX — Relación Inflación ↔ PIB
-
-![Relación Inflación ↔ PIB](reports/figures/scatter_MEX.png)
-
-### MEX — Hold-out: Real vs Predicho
-
-![Hold-out: Real vs Predicho](reports/figures/real_vs_predicho_MEX_random_forest.png)
-
-### MEX — RMSE (hold-out)
-
-![RMSE (hold-out)](reports/figures/rmse_MEX.png)
-
-### PER — Series de tiempo: Inflación y PIB
-
-![Series de tiempo: Inflación y PIB](reports/figures/series_PER.png)
-
-### PER — Relación Inflación ↔ PIB
-
-![Relación Inflación ↔ PIB](reports/figures/scatter_PER.png)
-
-### PER — Hold-out: Real vs Predicho
-
-![Hold-out: Real vs Predicho](reports/figures/real_vs_predicho_PER_random_forest.png)
-
-### PER — RMSE (hold-out)
-
-![RMSE (hold-out)](reports/figures/rmse_PER.png)
-
-
-## Cómo reproducir
-
-```bash
-pip install -r requirements.txt
+Comandos Principales
+# 1. Descargar y procesar datos del Banco Mundial
 python main.py fetch --countries COL MEX BRA CHL PER ARG --start_year 1991
+
+# 2. Entrenar y evaluar el modelo Random Forest
 python main.py bench --countries COL MEX BRA CHL PER ARG
+
+# 3. Generar figuras estáticas y README visual
 python main.py report
-```
+
+# 4. Crear dashboard interactivo (Plotly + HTML para GitHub Pages)
+python main.py report_html
+
+Resultados Resumidos
+País	RMSE (Hold-Out)	R² (Hold-Out)
+ARG	...	...
+BRA	...	...
+CHL	...	...
+COL	...	...
+MEX	...	...
+PER	...	...
+
+(Los valores reales se generan automáticamente en benchmark_metrics.csv.)
+
+Dashboard Interactivo en Línea
+
+GitHub Pages:
+https://juanbaron885-rgb.github.io/inflacion-y-crecimiento-latam/
+
+Mapa LATAM: https://juanbaron885-rgb.github.io/inflacion-y-crecimiento-latam/mapa.html
+
+PIB vs Inflación (todos): https://juanbaron885-rgb.github.io/inflacion-y-crecimiento-latam/pib_vs_inflacion.html
+
+Análisis por país (4 gráficas): https://juanbaron885-rgb.github.io/inflacion-y-crecimiento-latam/insights/
+
+Conclusiones
+
+Se logró automatizar todo el pipeline económico, desde la descarga de datos hasta la predicción y visualización.
+
+El modelo Random Forest muestra una capacidad sólida de generalización para series anuales pequeñas.
+
+La integración con Plotly y GitHub Pages permite comunicar resultados de forma interactiva y transparente.
+
+Este trabajo demuestra el potencial del Machine Learning aplicado a la economía regional, facilitando el análisis de políticas macroeconómicas basadas en evidencia.

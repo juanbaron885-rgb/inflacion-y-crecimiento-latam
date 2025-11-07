@@ -72,18 +72,31 @@ También contiene un selector por país que muestra las 4 gráficas clave.
 
 Estructura del Proyecto
 -data/
+
 -raw/               # datos crudos descargados
+
 -processed/         # datos limpios y features (CSV)
+
 -reports/
+
 -figures/           # figuras generadas para README
+
 - docs/
+
 -index.html         # dashboard principal (GitHub Pages)
+
 -mapa.html          # mapa interactivo LATAM
+
 - pib_vs_inflacion.html
+
 -insights/          # páginas por país (4 gráficas)
+
 -figures/           # imágenes públicas para Pages
+
 -.nojekyll
+
 -main.py                # script principal con CLI (fetch, bench, report, report_html)
+
 - README.md              # este documento
 
 Comandos Principales
